@@ -32,12 +32,12 @@ export class Service{
             console.log("Appwrite service :: createPost :: error",error);
         }
       }
-      async updatePost({title,slug,content,featuredImage,status}){
+      async updatePost(documentId, { title, content, featuredImage, status }) {
         try {
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectionId,
-                slug,
+                documentId,
                 {
                     title,
                     content,
@@ -45,9 +45,8 @@ export class Service{
                     status
                 }
             )
-            
         } catch (error) {
-            console.log("Appwrite service :: updatePost :: error",error);
+            console.log("Appwrite service :: updatePost :: error", error);
         }
       }
       async deletePost(slug){
@@ -75,6 +74,7 @@ export class Service{
             return false;
         }
       }
+
       async getPosts(queries = [Query.equal("status","active")]){
         try {
             return await this.databases.listDocuments(
@@ -86,6 +86,13 @@ export class Service{
             console.log("Appwrite service :: getPosts :: error",error);
             return false;
         }
+      }
+
+      getFileView(fileId) {
+        return this.bucket.getFileView(
+            conf.appwriteBucketId,
+            fileId
+        );
       }
 
       //file upload service
@@ -115,12 +122,6 @@ export class Service{
         }
       }
 
-      getFilePreview(fileId){
-        return this.bucket.getFilePreview(
-            conf.appwriteBucketId,
-            fileId
-        )
-      }
 }
 
 const service=new Service();
